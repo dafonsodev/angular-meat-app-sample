@@ -1,4 +1,4 @@
-# Angular - Meat App Sample
+# Angular - Meat App Sample - Curso da Udemy
 
 ## 1. Passos para começar
 
