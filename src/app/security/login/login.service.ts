@@ -3,13 +3,17 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs/Observable";
 import { MEAT_API } from '../../app.api';
 import { User } from "./user.model";
-import { Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
+import 'rxjs/add/operator/filter';
 
 @Injectable()
 export class LoginService {
     user: User
+    lastUrl: string
 
-    constructor(private http: HttpClient, private router: Router) {}
+    constructor(private http: HttpClient, private router: Router) {
+        this.router.events.filter(e => e instanceof NavigationEnd).subscribe((e: NavigationEnd) => this.lastUrl = e.url)
+    }
 
     isLoggedIn(): boolean {
         return this.user !== undefined
@@ -20,7 +24,11 @@ export class LoginService {
                         .do(user => this.user = user)
     }
 
-    handleLogin(path?: string) {
-        this.router.navigate(['/login', path])
+    logout() {
+        this.user = undefined
+    }
+
+    handleLogin(path: string = this.lastUrl) {
+        this.router.navigate(['/login', btoa(path)])
     }
 }
